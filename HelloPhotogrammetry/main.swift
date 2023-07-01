@@ -26,7 +26,7 @@ struct HelloPhotogrammetry: ParsableCommand {
     
     @Argument(help: "The local input file folder of images.")
     private var inputFolder: String
-    
+
     @Argument(help: "Full path to the USDZ output file.")
     private var outputFilename: String
     
@@ -55,11 +55,11 @@ struct HelloPhotogrammetry: ParsableCommand {
             print("Object Capture is not available on this computer.")
             Foundation.exit(1)
         }
-        
-        let inputFolderUrl = URL(fileURLWithPath: inputFolder, isDirectory: true)
+
+        let inputFolderUrl = URL(fileURLWithPath: "/Users/davidohayonjr./Desktop/Coke Can", isDirectory: true)
         let configuration = makeConfigurationFromArguments()
         logger.log("Using configuration: \(String(describing: configuration))")
-        
+
         // Try to create the session, or else exit.
         var maybeSession: PhotogrammetrySession? = nil
         do {
@@ -73,7 +73,7 @@ struct HelloPhotogrammetry: ParsableCommand {
         guard let session = maybeSession else {
             Foundation.exit(1)
         }
-        
+
         let waiter = Task {
             do {
                 for try await output in session.outputs {
@@ -108,7 +108,7 @@ struct HelloPhotogrammetry: ParsableCommand {
                 Foundation.exit(0)
             }
         }
-        
+
         // The compiler may deinitialize these objects since they may appear to be
         // unused. This keeps them from being deallocated until they exit.
         withExtendedLifetime((session, waiter)) {
@@ -127,6 +127,40 @@ struct HelloPhotogrammetry: ParsableCommand {
             }
         }
     }
+    
+//    func run() {
+//        guard PhotogrammetrySession.isSupported else {
+//            logger.error("Program terminated early because the hardware doesn't support Object Capture.")
+//            print("Object Capture is not available on this computer.")
+//            Foundation.exit(1)
+//        }
+//
+//        let inputFolderUrl = URL(fileURLWithPath: "/Users/davidohayonjr./Desktop/Coke Can", isDirectory: true)
+//        let configuration = makeConfigurationFromArguments()
+//        logger.log("Using configuration: \(String(describing: configuration))")
+//
+//        // Try to create the session, or else exit.
+//        var maybeSession: PhotogrammetrySession? = nil
+//        do {
+//            maybeSession = try PhotogrammetrySession(input: inputFolderUrl,
+//                                                     configuration: configuration)
+//            logger.log("Successfully created session.")
+//        } catch {
+//            logger.error("Error creating session: \(String(describing: error))")
+//            Foundation.exit(1)
+//        }
+//        guard let session = maybeSession else {
+//            Foundation.exit(1)
+//        }
+//
+//        let waiter = Task {
+//            // ...
+//            // Rest of the code remains the same.
+//        }
+//
+//        // Rest of the code remains the same.
+//    }
+
 
     /// Creates the session configuration by overriding any defaults with arguments specified.
     private func makeConfigurationFromArguments() -> PhotogrammetrySession.Configuration {
@@ -138,7 +172,8 @@ struct HelloPhotogrammetry: ParsableCommand {
 
     /// Creates a request to use based on the command-line arguments.
     private func makeRequestFromArguments() -> PhotogrammetrySession.Request {
-        let outputUrl = URL(fileURLWithPath: outputFilename)
+//        let outputUrl = URL(fileURLWithPath: "/Users/davidohayonjr./Desktop/AR Output")
+        let outputUrl = URL(fileURLWithPath: "/Users/davidohayonjr./Downloads")
         if let detailSetting = detail {
             return PhotogrammetrySession.Request.modelFile(url: outputUrl, detail: detailSetting)
         } else {
